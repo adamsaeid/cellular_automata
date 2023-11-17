@@ -5,10 +5,21 @@ fn main() {
     let mut next_state: Vec<u8> = Vec::new();
     let mut current_state: Vec<u8> = Vec::new();
 
-    const PADDING: u32 = 100;
+    let rule_number: u8 = 126; 
+    let rule: [u8; 8] = [
+        rule_number & 1,
+        (rule_number >> 1) & 1,
+        (rule_number >> 2) & 1,
+        (rule_number >> 3) & 1,
+        (rule_number >> 4) & 1,
+        (rule_number >> 5) & 1,
+        (rule_number >> 6) & 1,
+        (rule_number >> 7) & 1,
+    ];
 
     let mut pos = 0;
 
+    const PADDING: u8 = 100;
     while pos < PADDING {
       current_state.push(0);
       pos += 1;
@@ -45,24 +56,23 @@ fn main() {
         let output: String = output.into_iter().collect();
         println!("{}",  output);
 
-        for (i, el) in current_state.iter().enumerate() {
-            let mut start_index = 0;
+        for (i, current_cell) in current_state.iter().enumerate() {
+            let mut prev_cell: u8 = current_state[0];
+            let mut next_cell: u8 = *current_state.last().unwrap();
 
             if i > 0 {
-                start_index = i - 1;
-            }            
-
-            let end_index = cmp::min(current_state.len() - 1, i + 1);
-
-            let nhood = &current_state[start_index..end_index + 1];
-            let sum: u8 = nhood.iter().sum();
-
-            if sum == 0 || sum == 3 {
-                next_state.push(0);        
-            } else {
-                next_state.push(1);
+                prev_cell = current_state[i - 1];
             }
-        }
+
+            if i < current_state.len() - 1{
+                next_cell = current_state[i+1];
+            }
+            
+            let rule_index = prev_cell * 4 + current_cell * 2 + next_cell * 1;
+
+            let new_cell_state = rule[rule_index as usize];
+            next_state.push(new_cell_state);
+       }
 
         mem::swap(&mut current_state, &mut next_state);
         next_state.clear();
