@@ -5,7 +5,7 @@ fn main() {
     let mut next_state: Vec<u8> = Vec::new();
     let mut current_state: Vec<u8> = Vec::new();
 
-    const PADDING: u32 = 375;
+    const PADDING: u32 = 100;
 
     let mut pos = 0;
 
@@ -22,7 +22,13 @@ fn main() {
         pos += 1;
     }
 
-    while true {
+    const MAX_GENERATIONS: u32 = 500;
+
+    let mut current_gen = 0;
+
+    while current_gen < MAX_GENERATIONS {
+        current_gen += 1;
+
         let mut output: Vec<char> = Vec::new();
 
         for cell in &current_state {
