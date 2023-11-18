@@ -1,11 +1,14 @@
+use std::io;
+
 fn main() {
-    let rule_number: u8 = 225; 
+    let rule_number: u8 = input_rule_number();
+
     let rule: [u8; 8] = setup_rules(rule_number);
 
-    let size: usize = 600;
+    let size: usize = 500;
     let mut current_state: Vec<u8> = setup_initial_state(size);
 
-    const MAX_GENERATIONS: u32 = 2000;
+    const MAX_GENERATIONS: u32 = 500;
 
     let mut current_gen = 0;
 
@@ -16,6 +19,20 @@ fn main() {
         
         current_state = calculate_next_state(current_state, rule);
     }
+}
+
+fn input_rule_number() -> u8 {
+    let mut input_string = String::new();
+
+    println!("Enter rule number: ");
+
+    io::stdin()
+        .read_line(&mut input_string)
+        .expect("unable to read rule number");
+
+    let rule_number: u8 = input_string.trim().parse().expect("error parsing rule number");
+
+    return rule_number;
 }
 
 fn setup_rules(rule_number: u8) -> [u8; 8] {
