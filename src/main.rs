@@ -1,12 +1,25 @@
-use std::cmp;
-use std::mem;
-
 fn main() {
-    let mut next_state: Vec<u8> = Vec::new();
-    let mut current_state: Vec<u8> = Vec::new();
+    let rule_number: u8 = 225; 
+    let rule: [u8; 8] = setup_rules(rule_number);
 
-    let rule_number: u8 = 126; 
-    let rule: [u8; 8] = [
+    let size: usize = 600;
+    let mut current_state: Vec<u8> = setup_initial_state(size);
+
+    const MAX_GENERATIONS: u32 = 2000;
+
+    let mut current_gen = 0;
+
+    while current_gen < MAX_GENERATIONS {
+        current_gen += 1;
+
+        output_state(&current_state);
+        
+        current_state = calculate_next_state(current_state, rule);
+    }
+}
+
+fn setup_rules(rule_number: u8) -> [u8; 8] {
+    return [ 
         rule_number & 1,
         (rule_number >> 1) & 1,
         (rule_number >> 2) & 1,
@@ -16,66 +29,56 @@ fn main() {
         (rule_number >> 6) & 1,
         (rule_number >> 7) & 1,
     ];
+}
 
-    let mut pos = 0;
+fn setup_initial_state(size: usize) -> Vec<u8> {
+    let mut initial_state = vec![0; size];
+    let initial_active_cell_pos = size / 2 - 1;
 
-    const PADDING: u8 = 100;
-    while pos < PADDING {
-      current_state.push(0);
-      pos += 1;
+    initial_state[initial_active_cell_pos] = 1;
+
+    return initial_state;
+}
+
+fn output_state(state: &Vec<u8>) {
+    let mut output: Vec<char> = Vec::new();
+
+    for cell in state{
+        if *cell == 1 {
+            output.push('\u{2588}');
+            output.push('\u{2588}');
+        }
+        else {
+            output.push('\u{0020}');
+            output.push('\u{0020}');
+        }
     }
 
-    current_state.push(1);
+    let output: String = output.into_iter().collect();
+    println!("{}",  output);
+}
 
-    pos = 0;
-    while pos < PADDING {
-        current_state.push(0);
-        pos += 1;
-    }
+fn calculate_next_state(state: Vec<u8>, rule: [u8; 8]) -> Vec<u8> {
+    let mut next_state: Vec<u8> = Vec::new();
 
-    const MAX_GENERATIONS: u32 = 500;
+    for (i, current_cell) in state.iter().enumerate() {
+        let mut prev_cell: u8 = state[0];
+        let mut next_cell: u8 = *state.last().unwrap();
 
-    let mut current_gen = 0;
-
-    while current_gen < MAX_GENERATIONS {
-        current_gen += 1;
-
-        let mut output: Vec<char> = Vec::new();
-
-        for cell in &current_state {
-            if *cell == 1 {
-                output.push('\u{2588}');
-                output.push('\u{2588}');
-            }
-            else {
-                output.push('\u{0020}');
-                output.push('\u{0020}');
-            }
+        if i > 0 {
+            prev_cell = state[i - 1];
         }
 
-        let output: String = output.into_iter().collect();
-        println!("{}",  output);
+        if i < state.len() - 1{
+            next_cell = state[i+1];
+        }
+        
+        let rule_index = prev_cell * 4 + current_cell * 2 + next_cell * 1;
 
-        for (i, current_cell) in current_state.iter().enumerate() {
-            let mut prev_cell: u8 = current_state[0];
-            let mut next_cell: u8 = *current_state.last().unwrap();
-
-            if i > 0 {
-                prev_cell = current_state[i - 1];
-            }
-
-            if i < current_state.len() - 1{
-                next_cell = current_state[i+1];
-            }
-            
-            let rule_index = prev_cell * 4 + current_cell * 2 + next_cell * 1;
-
-            let new_cell_state = rule[rule_index as usize];
-            next_state.push(new_cell_state);
-       }
-
-        mem::swap(&mut current_state, &mut next_state);
-        next_state.clear();
+        let new_cell_state = rule[rule_index as usize];
+        next_state.push(new_cell_state);
     }
+
+    return next_state;
 }
 
