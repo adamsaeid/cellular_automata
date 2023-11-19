@@ -1,8 +1,14 @@
 [package]
 name = "cellular_automata"
 version = "0.1.0"
-edition = "2021"
+authors = ["Adam Saeid <adam.saeid@gmail.com>"]
+description = "Elementary cellular automata"
+license = "MIT/Apache-2.0"
+repository = "https://github.com/adamsaeid/cellular-automata"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[lib]
+crate-type = ["cdylib"]
 
 [dependencies]
+wasm-bindgen = "0.2"
+web-sys = { version = "0.3.65", features = ['console'] }

@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <meta charset="utf-8" />
+    <title>Elementary cellular automata</title>
+  </head>
+  <body>
+    <script type="module">
+      import init, { elementary_ca } from "./pkg/cellular_automata.js";
+
+      init().then(() => {
+        window.elementary_ca = elementary_ca;
+      });
+    </script>
+  </body>
+</html>

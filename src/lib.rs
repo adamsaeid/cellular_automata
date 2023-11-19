@@ -1,38 +1,19 @@
-use std::io;
+extern crate wasm_bindgen;
+use wasm_bindgen::prelude::*;
+extern crate web_sys;
+use web_sys::console;
 
-fn main() {
-    let rule_number: u8 = input_rule_number();
-
+#[wasm_bindgen]
+pub fn elementary_ca(rule_number: u8, size: usize, num_generations: u32) {
     let rule: [u8; 8] = setup_rules(rule_number);
-
-    let size: usize = 500;
     let mut current_state: Vec<u8> = setup_initial_state(size);
-
-    const MAX_GENERATIONS: u32 = 500;
-
     let mut current_gen = 0;
 
-    while current_gen < MAX_GENERATIONS {
+    while current_gen < num_generations {
         current_gen += 1;
-
         output_state(&current_state);
-        
         current_state = calculate_next_state(current_state, rule);
     }
-}
-
-fn input_rule_number() -> u8 {
-    let mut input_string = String::new();
-
-    println!("Enter rule number: ");
-
-    io::stdin()
-        .read_line(&mut input_string)
-        .expect("unable to read rule number");
-
-    let rule_number: u8 = input_string.trim().parse().expect("error parsing rule number");
-
-    return rule_number;
 }
 
 fn setup_rules(rule_number: u8) -> [u8; 8] {
@@ -71,8 +52,9 @@ fn output_state(state: &Vec<u8>) {
         }
     }
 
-    let output: String = output.into_iter().collect();
-    println!("{}",  output);
+    let output_string: String = output.into_iter().collect();
+    let js_value = JsValue::from_str(&output_string);
+    console::log_1(&js_value);
 }
 
 fn calculate_next_state(state: Vec<u8>, rule: [u8; 8]) -> Vec<u8> {
