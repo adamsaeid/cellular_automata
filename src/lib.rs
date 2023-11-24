@@ -1,7 +1,12 @@
 extern crate wasm_bindgen;
 use wasm_bindgen::prelude::*;
-extern crate web_sys;
-use web_sys::console;
+
+#[wasm_bindgen]
+extern {
+    fn initializeCanvas(size: usize, num_generatins: u32);
+    fn drawGeneration(state: Vec<u8>, generation: u32);
+}
+
 
 #[wasm_bindgen]
 pub fn elementary_ca(rule_number: u8, size: usize, num_generations: u32) {
@@ -9,9 +14,11 @@ pub fn elementary_ca(rule_number: u8, size: usize, num_generations: u32) {
     let mut current_state: Vec<u8> = setup_initial_state(size);
     let mut current_gen = 0;
 
+    initializeCanvas(size, num_generations);
+
     while current_gen < num_generations {
+        drawGeneration(current_state.clone(), current_gen);
         current_gen += 1;
-        output_state(&current_state);
         current_state = calculate_next_state(current_state, rule);
     }
 }
@@ -36,25 +43,6 @@ fn setup_initial_state(size: usize) -> Vec<u8> {
     initial_state[initial_active_cell_pos] = 1;
 
     return initial_state;
-}
-
-fn output_state(state: &Vec<u8>) {
-    let mut output: Vec<char> = Vec::new();
-
-    for cell in state{
-        if *cell == 1 {
-            output.push('\u{2588}');
-            output.push('\u{2588}');
-        }
-        else {
-            output.push('\u{0020}');
-            output.push('\u{0020}');
-        }
-    }
-
-    let output_string: String = output.into_iter().collect();
-    let js_value = JsValue::from_str(&output_string);
-    console::log_1(&js_value);
 }
 
 fn calculate_next_state(state: Vec<u8>, rule: [u8; 8]) -> Vec<u8> {

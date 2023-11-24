@@ -4,7 +4,33 @@
     <meta charset="utf-8" />
     <title>Elementary cellular automata</title>
   </head>
+
   <body>
+    <canvas id="canvas" width="0" height="0" style="border:1px solid #000000;">
+    </canvas>
+
+    <script>
+      const canvas = document.getElementById("canvas");
+      const context = canvas.getContext("2d");
+
+      const CELL_SIZE = 10;
+
+      const initializeCanvas = (size, numGenerations) => {
+        canvas.width = CELL_SIZE * size;
+        canvas.height = CELL_SIZE * numGenerations;
+        context.clearRect(0, 0, canvas.width, canvas.height);
+      };
+
+      const drawGeneration = (state, generation) => {
+        state.forEach((cellIsActive, index) => {
+          if (cellIsActive) {
+            context.fillRect(CELL_SIZE * index, CELL_SIZE * generation, CELL_SIZE, CELL_SIZE);
+            context.stroke();
+          };
+        });
+      };
+    </script>
+
     <script type="module">
       import init, { elementary_ca } from "./pkg/cellular_automata.js";
 
