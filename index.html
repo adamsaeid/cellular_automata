@@ -6,6 +6,10 @@
   </head>
 
   <body>
+    <h1>Elementary Cellular Automata</h1>
+    <p>Refresh page to view a random rule</p>
+    <p>You can also open up the developer console and call elementary_ca(ruleNumber, width, numGenerations) with whatever parameters</p>
+    <p><a href="https://mathworld.wolfram.com/ElementaryCellularAutomaton.html">What is an elementary cellular automaton?</a></p>
     <canvas id="canvas" width="0" height="0" style="border:1px solid #000000;">
     </canvas>
 
@@ -36,6 +40,10 @@
 
       init().then(() => {
         window.elementary_ca = elementary_ca;
+      
+        // display a random rule on page load
+        const ruleNumber = Math.floor(Math.random() * 256);
+        elementary_ca(ruleNumber, 250, 100);
       });
     </script>
   </body>
