@@ -38,7 +38,7 @@ fn setup_rules(rule_number: u8) -> [u8; 8] {
 
 fn setup_initial_state(size: usize) -> Vec<u8> {
     let mut initial_state = vec![0; size];
-    let initial_active_cell_pos = size / 2 - 1;
+    let initial_active_cell_pos = size / 2;
 
     initial_state[initial_active_cell_pos] = 1;
 
@@ -49,8 +49,9 @@ fn calculate_next_state(state: Vec<u8>, rule: [u8; 8]) -> Vec<u8> {
     let mut next_state: Vec<u8> = Vec::new();
 
     for (i, current_cell) in state.iter().enumerate() {
-        let mut prev_cell: u8 = state[0];
-        let mut next_cell: u8 = *state.last().unwrap();
+        // wrap around if boundary cell
+        let mut prev_cell: u8 = *state.last().unwrap();
+        let mut next_cell: u8 = state[0];
 
         if i > 0 {
             prev_cell = state[i - 1];
