@@ -1,13 +1,20 @@
 import { useEffect } from 'react';
-import './App.css';
+import { useRef } from "react";
+import { useDraggable } from "react-use-draggable-scroll";
+
 import init, { elementary_ca } from "cellular_automata";
+import './App.css';
+
 
 function App() {
+  const ref = useRef();
+  const { events } = useDraggable(ref);
+ 
   useEffect(() => {
     const canvas = document.getElementById("canvas");
     const context = canvas.getContext("2d");
     
-    const CELL_SIZE = 3;
+    const CELL_SIZE = 2;
     
     window.initializeCanvas = (size, numGenerations) => {
       canvas.width = CELL_SIZE * size;
@@ -28,21 +35,20 @@ function App() {
       window.elementary_ca = elementary_ca;
     
       // display a random rule on page load
-      const ruleNumber = Math.floor(Math.random() * 256);
-      elementary_ca(ruleNumber, 250, 100);
+      // const ruleNumber = Math.floor(Math.random() * 256);
+      elementary_ca(30, 2000, 2000);
     });
   }, []);
 
   return (
-    <div className="App">
-      <h1>Elementary Cellular Automata</h1>
-      <p>Refresh page to view a random rule</p>
-      <p>You can also open up the developer console and call elementary_ca(ruleNumber, width, numGenerations) with whatever parameters</p>
-      <p><a href="https://mathworld.wolfram.com/ElementaryCellularAutomaton.html">What is an elementary cellular automaton?</a></p>
-      <p><a href="https://github.com/adamsaeid/cellular_automata">View code on GitHub</a></p>
+    <div
+      {...events}
+      ref={ref} // add reference and events to the wrapping div
 
-      <canvas id="canvas" width="0" height="0">
-      </canvas>
+      className="overflow-scroll"
+      style={{ overflow: 'scroll', width: '100%', height: '100vh' }}
+    >
+      <canvas id="canvas" width="0" height="0" style={{display: "block"}}></canvas>
     </div>
   );
 }
