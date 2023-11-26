@@ -17,21 +17,7 @@ jobs:
       - name: build 
         run: |
           curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
-          
           wasm-pack build --target web --out-dir build/pkg
-
-      # - name: deploy
-      #   run: |
-      #     git config user.name "GitHub Actions"
-      #     git config user.email "actions@github.com"
-      #     git checkout gh-pages
-      #     git rebase main
-      #     rm build/pkg/.gitignore
-      #     git add build/
-      #     git commit -m "deploy" || echo "no changes to commit"
-      #     git push -f origin gh-pages
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Node.js environment
         uses: actions/setup-node@v2.1.5
@@ -41,7 +27,8 @@ jobs:
       - name: build react app
         run: |
           cd ui
-          npm i
+          npm install
+          npm install ../pkg
           npm run build
 
       - name: Deploy
