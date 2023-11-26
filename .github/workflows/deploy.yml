@@ -28,7 +28,7 @@ jobs:
         run: |
           cd ui
           npm install
-          npm install ../pkg
+          npm install ../build/pkg
           npm run build
 
       - name: Deploy
