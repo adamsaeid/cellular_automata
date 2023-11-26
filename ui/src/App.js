@@ -19,6 +19,11 @@ function App() {
     window.initializeCanvas = (size, numGenerations) => {
       canvas.width = CELL_SIZE * size;
       canvas.height = CELL_SIZE * numGenerations;
+
+      const container = canvas.parentElement;
+      const scrollX = (canvas.offsetWidth - container.offsetWidth) / 2;
+      container.scrollLeft = scrollX;
+
       context.clearRect(0, 0, canvas.width, canvas.height);
     };
     
@@ -37,6 +42,7 @@ function App() {
       // display a random rule on page load
       // const ruleNumber = Math.floor(Math.random() * 256);
       elementary_ca(30, 2000, 2000);
+
     });
   }, []);
 
