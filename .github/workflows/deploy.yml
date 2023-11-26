@@ -19,15 +19,26 @@ jobs:
           curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
           wasm-pack build --target web --out-dir build/pkg
 
-      - name: deploy
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v2.1.5
+        with:
+          node-version: "18.16.1"
+      
+      - name: build react app
         run: |
-          git config user.name "GitHub Actions"
-          git config user.email "actions@github.com"
-          git checkout gh-pages
-          git rebase main
-          rm build/pkg/.gitignore
-          git add build/
-          git commit -m "deploy" || echo "no changes to commit"
-          git push -f origin gh-pages
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          cd ui
+          npm install
+          npm install ../build/pkg
+          npm run build
+
+      - name: add CNAME
+        run: |
+          echo "current dir"
+          pwd
+          echo "cellular-automata.adamys.dev" > ./ui/build/CNAME
+
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./ui/build 
