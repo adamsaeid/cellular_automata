@@ -1,15 +1,19 @@
-import { useEffect } from 'react';
-import { useRef } from "react";
+import { useEffect, useRef, useState } from 'react';
 import { useDraggable } from "react-use-draggable-scroll";
+import '@fontsource/inter';
 
 import init, { elementary_ca } from "cellular_automata";
+import RuleSelector from "./components/RuleSelector";
+
 import './App.css';
 
 
 function App() {
-  const ref = useRef();
-  const { events } = useDraggable(ref);
- 
+  const draggableRef = useRef();
+  const { events } = useDraggable(draggableRef);
+
+  const [ruleSelected, setRuleSelected] = useState(false);
+
   useEffect(() => {
     const canvas = document.getElementById("canvas");
     const context = canvas.getContext("2d");
@@ -38,22 +42,23 @@ function App() {
   
     init().then(() => {
       window.elementary_ca = elementary_ca;
-    
-      // display a random rule on page load
-      // const ruleNumber = Math.floor(Math.random() * 256);
-      elementary_ca(30, 2000, 2000);
-
     });
   }, []);
+
+  const handleSelectedRule = (rule, size, numGenerations) => {
+    setRuleSelected(true);
+    window.elementary_ca(rule, size, numGenerations);
+  }
 
   return (
     <div
       {...events}
-      ref={ref} // add reference and events to the wrapping div
+      ref={draggableRef}
 
       className="overflow-scroll"
       style={{ overflow: 'scroll', width: '100%', height: '100vh' }}
     >
+      { !ruleSelected && <RuleSelector onSelection={handleSelectedRule}/> }
       <canvas id="canvas" width="0" height="0" style={{display: "block"}}></canvas>
     </div>
   );
