@@ -1,5 +1,7 @@
 extern crate wasm_bindgen;
 use wasm_bindgen::prelude::*;
+extern crate rand;
+use rand::Rng; 
 
 #[wasm_bindgen]
 extern {
@@ -9,9 +11,9 @@ extern {
 
 
 #[wasm_bindgen]
-pub fn elementary_ca(rule_number: u8, size: usize, num_generations: u32) {
+pub fn elementary_ca(rule_number: u8, size: usize, num_generations: u32, randomize: bool) {
     let rule: [u8; 8] = setup_rules(rule_number);
-    let mut current_state: Vec<u8> = setup_initial_state(size);
+    let mut current_state: Vec<u8> = setup_initial_state(size, randomize);
     let mut current_gen = 0;
 
     initializeCanvas(size, num_generations);
@@ -36,11 +38,18 @@ fn setup_rules(rule_number: u8) -> [u8; 8] {
     ];
 }
 
-fn setup_initial_state(size: usize) -> Vec<u8> {
+fn setup_initial_state(size: usize, randomize: bool) -> Vec<u8> {
     let mut initial_state = vec![0; size];
-    let initial_active_cell_pos = size / 2;
 
-    initial_state[initial_active_cell_pos] = 1;
+    if randomize {
+        let mut rng = rand::thread_rng(); // Get a random number generator
+        initial_state = (0..size)
+            .map(|_| if rng.gen::<bool>() { 1 } else { 0 }) 
+            .collect()
+    } else {
+        let initial_active_cell_pos = size / 2;
+        initial_state[initial_active_cell_pos] = 1;
+    }
 
     return initial_state;
 }

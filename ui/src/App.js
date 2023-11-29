@@ -45,9 +45,9 @@ function App() {
     });
   }, []);
 
-  const handleSelectedRule = (rule, size, numGenerations) => {
+  const handleSelectedRule = (rule, size, numGenerations, randomInitialState) => {
     setRuleSelected(true);
-    window.elementary_ca(rule, size, numGenerations);
+    window.elementary_ca(rule, size, numGenerations, randomInitialState);
   }
 
   return (

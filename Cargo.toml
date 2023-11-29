@@ -10,5 +10,6 @@ repository = "https://github.com/adamsaeid/cellular-automata"
 crate-type = ["cdylib"]
 
 [dependencies]
+rand = "0.8.5"
+getrandom = { version = "0.2", features = ["js"] }
 wasm-bindgen = "0.2"
-web-sys = { version = "0.3.65", features = ['console'] }

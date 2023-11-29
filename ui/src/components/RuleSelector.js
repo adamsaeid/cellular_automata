@@ -1,17 +1,19 @@
 import { useState } from 'react';
-import { Stack, FormControl, FormLabel, Input, Button, Container } from '@mui/joy';
+import { Checkbox, Stack, FormControl, FormLabel, Input, Button, Container } from '@mui/joy';
 
 const RuleSelector = ({ onSelection }) => {
   const [ruleNumber, setRuleNumber] = useState(30);
   const [size, setSize] = useState(1000);
   const [numGenerations, setNumGenerations] = useState(2000);
+  const [randomInitialState, setRandomInitialState] = useState(false);
 
   const onChangeRuleNumber = (event) => { setRuleNumber(event.target.value) }
   const onChangeSize = (event) => { setSize(event.target.value) }
   const onChangeNumGenerations = (event) => { setNumGenerations(event.target.value) }
+  const onChangeRandomInitialState = (event) => { setRandomInitialState(event.target.checked) }
 
   const handleSubmit = () => {
-    onSelection(ruleNumber, size, numGenerations);
+    onSelection(ruleNumber, size, numGenerations, randomInitialState);
   };
 
   const inputStyle = { padding: '10px 14px' }
@@ -32,6 +34,7 @@ const RuleSelector = ({ onSelection }) => {
             <FormLabel>Number of generations</FormLabel>
             <Input value={numGenerations} onChange={onChangeNumGenerations} placeholder="Number of generations" style={inputStyle} required />
           </FormControl>
+          <Checkbox label="Random initial state" style={{ marginTop: '20px' }} checked={randomInitialState} onChange={onChangeRandomInitialState}/>
           <Button type="submit" style={{ padding: '10px 14px', marginTop: '20px' }}>Submit</Button>
         </Stack>
       </form>
