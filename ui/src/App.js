@@ -13,6 +13,24 @@ function App() {
   const { events } = useDraggable(draggableRef);
 
   const [ruleSelected, setRuleSelected] = useState(false);
+  const [hasDrawnInitialState, setHasDrawnInitialState] = useState(false);
+  const [readyToStart, setReadyToStart] = useState(false);
+
+  const params = new URLSearchParams(window.location.search);
+
+  const ruleNumber = params.get("rule");
+  const width = params.get("width");
+  const numGenerations = params.get("generations");
+  const randomState = params.get('random') === 'true';
+
+  useEffect(() => {
+    if (readyToStart && !hasDrawnInitialState) {
+      console.log(randomState)
+      handleSelectedRule(ruleNumber, width, numGenerations, randomState);
+      setHasDrawnInitialState(true);
+    }
+  }, [readyToStart, ruleNumber, width, numGenerations, randomState, hasDrawnInitialState]); 
+
 
   useEffect(() => {
     const canvas = document.getElementById("canvas");
@@ -42,6 +60,7 @@ function App() {
   
     init().then(() => {
       window.elementary_ca = elementary_ca;
+      setReadyToStart(true);
     });
   }, []);
 
@@ -58,7 +77,7 @@ function App() {
       className="overflow-scroll"
       style={{ overflow: 'scroll', width: '100%', height: '100vh' }}
     >
-      { !ruleSelected && <RuleSelector onSelection={handleSelectedRule}/> }
+      { !ruleNumber && !ruleSelected && <RuleSelector onSelection={handleSelectedRule}/> }
       <canvas id="canvas" width="0" height="0" style={{display: "block"}}></canvas>
     </div>
   );
